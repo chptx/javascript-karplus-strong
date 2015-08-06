@@ -38,7 +38,11 @@ function* fixup_chords(chords) {
 }
 
 function get_progression(tonic, scale, progression) {
-  return Array.from(fixup_chords(teoriaChordProgression(teoria.scale(tonic, scale), progression).getChords()), chord => chord.name);
+  let chord_names = [];
+  for (let chord of fixup_chords(teoriaChordProgression(teoria.scale(tonic, scale), progression).getChords())) {
+    chord_names.push(chord.name);
+  }
+  return chord_names;
 }
 
 global.progressions = {
