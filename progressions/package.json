@@ -1,0 +1,17 @@
+{
+  "name": "progressions",
+  "version": "0.0.1",
+  "description": "Popular chord progressions",
+  "license": "CC0",
+  "scripts": {
+    "bundle": "browserify -t babelify progressions.js --outfile ../karplus-strong/progressions.js"
+  },
+  "dependencies": {
+      "teoria": "^1.12.0",
+      "teoria-chord-progression": "^1.0.0"
+  },
+  "devDependencies": {
+      "browserify": "^10.2.0",
+      "babelify": "^6.1.3"
+  }
+}

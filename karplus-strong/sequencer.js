@@ -9,14 +9,7 @@ var timeUnit = 0.12;
 // adjustment of guitar parameters with real-time feedback.
 // (The higher strumGenerationsPerRun, the longer the delay between
 //  parameter adjustments and samples created with the new parameters.)
-function queueStrums(sequenceN, blockStartTime, chordIndex, precacheTime) {
-    var chords = [
-        Guitar.C_MAJOR,
-        Guitar.G_MAJOR,
-        Guitar.A_MINOR,
-        Guitar.E_MINOR
-    ];
-
+function queueStrums(chords, sequenceN, blockStartTime, chordIndex, precacheTime) {
     var playState = document.getElementById("playState").value;
     if (playState == "stopped") {
         return;
@@ -51,40 +44,8 @@ function queueStrums(sequenceN, blockStartTime, chordIndex, precacheTime) {
             guitar.strumChord(curStrumStartTime, false, 0.8, chord);
             break;
         case 6:
-            curStrumStartTime = blockStartTime + timeUnit * 16;
-            guitar.strumChord(curStrumStartTime, true,  1.0, chord);
-            break;
-        case 7:
-            curStrumStartTime = blockStartTime + timeUnit * 20;
-            guitar.strumChord(curStrumStartTime, true,  1.0, chord);
-            break;
-        case 8:
-            curStrumStartTime = blockStartTime + timeUnit * 22;
-            guitar.strumChord(curStrumStartTime, false, 0.8, chord);
-            break;
-        case 9:
-            curStrumStartTime = blockStartTime + timeUnit * 26;
-            guitar.strumChord(curStrumStartTime, false, 0.8, chord);
-            break;
-        case 10:
-            curStrumStartTime = blockStartTime + timeUnit * 28;
-            guitar.strumChord(curStrumStartTime, true,  1.0, chord);
-            break;
-        case 11:
-            curStrumStartTime = blockStartTime + timeUnit * 30;
-            guitar.strumChord(curStrumStartTime, false, 0.8, chord);
-            break;
-        case 12:
-
-            curStrumStartTime = blockStartTime + timeUnit * 31;
-            guitar.strings[2].pluck(curStrumStartTime,   0.7, chord[2]);
-
-            curStrumStartTime = blockStartTime + timeUnit * 31.5;
-            guitar.strings[1].pluck(curStrumStartTime, 0.7, chord[1]);
-
-            chordIndex = (chordIndex + 1) % 4;
-            blockStartTime += timeUnit*32;
-
+            chordIndex = (chordIndex + 1) % chords.length;
+            blockStartTime += timeUnit*16;
             break;
     }
     sequenceN++;
@@ -106,15 +67,15 @@ function queueStrums(sequenceN, blockStartTime, chordIndex, precacheTime) {
         generateIn = 0;
 
     nextGenerationCall = function() {
-        queueStrums(sequenceN, blockStartTime, chordIndex, precacheTime);
+        queueStrums(chords, sequenceN, blockStartTime, chordIndex, precacheTime);
     };
     setTimeout(nextGenerationCall, generateIn * 1000);
 }
 
-function startGuitarPlaying() {
+function startGuitarPlaying(chords) {
     var startSequenceN = 0;
     var blockStartTime = audioCtx.currentTime;
     var startChordIndex = 0;
     var precacheTime = 0.0;
-    queueStrums(startSequenceN, blockStartTime, startChordIndex, precacheTime);
+    queueStrums(chords, startSequenceN, blockStartTime, startChordIndex, precacheTime);
 }

@@ -86,18 +86,53 @@ function toggleGuitarPlaying(buttonID, mode) {
     var startStopButton = document.getElementById(buttonID);
     var text = startStopButton.innerHTML;
     var playState = document.getElementById("playState");
-
+    var chords = document.getElementById("guitarChords").value.split(' ');
 
     if (text == "Start") {
         startStopButton.innerHTML = "Stop";
         playState.value = "playing";
         guitar.setMode(mode);
-        startGuitarPlaying();
+        for (var i = 0; i < chords.length; i++) {
+          chords[i] = Guitar.chords[chords[i].trim()];
+        }
+        startGuitarPlaying(chords);
     } else {
         startStopButton.innerHTML = "Start";
         playState.value = "stopped";
     }
 }
+
+function updateChords() {
+    var key = document.getElementById("key").value.split(' ');
+    var prog_name = document.getElementById("progression").value;
+    var p = progressions.get_progression(key[0], key[1], progressions.progressions[prog_name]);
+    document.getElementById("guitarChords").value = p.join(' ');
+}
+
+window.addEventListener("DOMContentLoaded", function() {
+  var key = document.getElementById("key");
+  function add(name, selected) {
+    var o = document.createElement("option");
+    o.value = name;
+    o.text = name;
+    o.defaultSelected = selected;
+    key.add(o);
+  }
+  for (var i = 0; i < progressions.notes.length; i++) {
+    var n = progressions.notes[i];
+    add(n + " major", n == "C");
+    add(n + " minor", false);
+  }
+  var progs = document.getElementById("progression");
+  for (var p in progressions.progressions) {
+    o = document.createElement("option");
+    o.value = p;
+    o.text = p;
+    progs.add(o);
+  }
+  updateChords();
+});
+
 function updateStringDamping() {
     var stringDampingInput = document.getElementById("stringDamping");
     var stringDamping = stringDampingInput.valueAsNumber;

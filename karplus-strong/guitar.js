@@ -21,10 +21,21 @@ function Guitar(audioCtx, audioDestination) {
 // each fret represents an increase in pitch by one semitone
 // (logarithmically, one-twelth of an octave)
 // -1: don't pluck that string
-Guitar.C_MAJOR = [-1,  3, 2, 0, 0, 0];
-Guitar.G_MAJOR = [ 3,  2, 0, 0, 0, 3];
-Guitar.A_MINOR = [ 0,  0, 2, 2, 0, 0];
-Guitar.E_MINOR = [ 0,  2, 2, 0, 3, 0];
+Guitar.chords = {};
+// Convert jtab's chords to simple fret positions.
+for (var c in jtab.Chords) {
+  var chord = jtab.Chords[c][0];
+  var base = chord[0];
+  var fingering = [];
+  for (var i = 1; i < chord.length; i++) {
+    var fret = chord[i][0];
+    if (fret != -1) {
+      fret += base;
+    }
+    fingering.push(fret);
+  }
+  Guitar.chords[c] = fingering;
+}
 
 // to add a class method in JavaScript,
 // we add a function property to the class's 'prototype' property
